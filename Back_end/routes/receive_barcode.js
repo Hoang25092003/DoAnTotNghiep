@@ -70,24 +70,24 @@ router.post("/receive_barcode_ESP", barcodeLimiter, async (req, res) => {
             .input("device_id", device_id)
             .query(`SELECT assigned_userID FROM DevicesAuthorization WHERE device_id = @device_id`);
 
-        // const userID = result.recordset;
-        // // Nếu không có ai được phân quyền thiết bị này, thì bỏ qua xử lý
-        // if (userID.length === 0) {
-        //     console.log(`Thiết bị ${device_id} chưa được phân quyền. Bỏ qua...`);
-        //     return res.status(403).json({ message: "Thiết bị chưa được phân quyền", device_id });
-        // }
-
-        const userIDList = result.recordset.map(row => row.assigned_userID);
+        const userID = result.recordset;
         // Nếu không có ai được phân quyền thiết bị này, thì bỏ qua xử lý
-        if (userIDList.length === 0) {
+        if (userID.length === 0) {
             console.log(`Thiết bị ${device_id} chưa được phân quyền. Bỏ qua...`);
             return res.status(403).json({ message: "Thiết bị chưa được phân quyền", device_id });
         }
-        // So sánh user_id từ client với danh sách đã phân quyền
-        if (!user_id || !userIDList.includes(user_id)) {
-            console.log(`User ${user_id} không có quyền sử dụng thiết bị ${device_id}.`);
-            return res.status(403).json({ message: "User không có quyền sử dụng thiết bị này", device_id, user_id });
-        }
+
+        // const userIDList = result.recordset.map(row => row.assigned_userID);
+        // // Nếu không có ai được phân quyền thiết bị này, thì bỏ qua xử lý
+        // if (userIDList.length === 0) {
+        //     console.log(`Thiết bị ${device_id} chưa được phân quyền. Bỏ qua...`);
+        //     return res.status(403).json({ message: "Thiết bị chưa được phân quyền", device_id });
+        // }
+        // // So sánh user_id từ client với danh sách đã phân quyền
+        // if (!user_id || !userIDList.includes(user_id)) {
+        //     console.log(`User ${user_id} không có quyền sử dụng thiết bị ${device_id}.`);
+        //     return res.status(403).json({ message: "User không có quyền sử dụng thiết bị này", device_id, user_id });
+        // }
 
         if (cleanBarcode.length === 13) {
             console.log("Barcode is valid:", cleanBarcode);
